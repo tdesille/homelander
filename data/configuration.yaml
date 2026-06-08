@@ -1,0 +1,10 @@
+mqtt:
+  server: mqtt://mosquitto:1883
+serial:
+  port: /dev/ttyUSB0
+frontend:
+  enabled: true
+version: 5
+devices:
+  '0xf0d1b800001d0901':
+    friendly_name: '0xf0d1b800001d0901'
