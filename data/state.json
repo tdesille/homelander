@@ -1,7 +1,7 @@
 {
     "0xf0d1b800001d0901": {
-        "brightness": 191.25,
-        "state": "OFF",
+        "brightness": 254,
+        "state": "ON",
         "update": {
             "state": "available",
             "installed_version": 35087696,
