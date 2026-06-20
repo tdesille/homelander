@@ -1,0 +1,41 @@
+mqtt:
+  server: mqtt://mosquitto:1883
+serial:
+  port: /dev/ttyUSB0
+frontend:
+  enabled: true
+version: 5
+advanced:
+  network_key:
+    - 83
+    - 140
+    - 246
+    - 8
+    - 215
+    - 101
+    - 68
+    - 185
+    - 66
+    - 237
+    - 212
+    - 153
+    - 56
+    - 142
+    - 190
+    - 113
+  pan_id: 59955
+  ext_pan_id:
+    - 237
+    - 62
+    - 147
+    - 237
+    - 255
+    - 144
+    - 3
+    - 45
+  channel: 15
+devices:
+  '0xf0d1b800001d0901':
+    friendly_name: '0xf0d1b800001d0901'
+  '0xf0d1b800001d0d62':
+    friendly_name: '0xf0d1b800001d0d62'

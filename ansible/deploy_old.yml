@@ -1,0 +1,57 @@
+# deploy.yml
+- name: Build and export homelander image locally
+  hosts: localhost
+  connection: local
+  vars:
+    image_name: homelander:latest
+    tarball: /tmp/homelander.tar
+  tasks:
+    - name: Cross-build arm64 image and export to tarball
+      ansible.builtin.shell: >
+        docker buildx build
+        --platform linux/arm64
+        -t {{ image_name }}
+        -o type=docker,dest={{ tarball }}
+        .
+      args:
+        chdir: "{{ playbook_dir }}"
+        executable: /bin/bash
+
+- name: Deploy stack on the Raspberry Pi
+  hosts: rpi
+  gather_facts: false
+  vars:
+    deploy_dir: /home/{{ ansible_user }}/homelab
+    tarball: /tmp/homelander.tar
+  tasks:
+    - name: Create deploy directory
+      ansible.builtin.file:
+        path: "{{ deploy_dir }}"
+        state: directory
+
+    - name: Copy compose file
+      ansible.builtin.copy:
+        src: docker-compose.yml
+        dest: "{{ deploy_dir }}/docker-compose.yml"
+
+    - name: Copy config directories
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ deploy_dir }}/"
+      loop:
+        - mosquitto
+        - zigbee2mqtt-data
+
+    - name: Ship the image tarball
+      ansible.builtin.copy:
+        src: "{{ tarball }}"
+        dest: "{{ deploy_dir }}/homelander.tar"
+
+    - name: Load the image into the Pi's docker
+      ansible.builtin.command: docker load -i {{ deploy_dir }}/homelander.tar
+
+    - name: Bring up the stack (pulls mosquitto + zigbee2mqtt, uses loaded homelander)
+      community.docker.docker_compose_v2:
+        project_src: "{{ deploy_dir }}"
+        pull: missing      # fetch the two public images if absent
+        # no build → Pi never compiles anything
