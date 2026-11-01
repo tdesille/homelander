@@ -11,6 +11,6 @@
   languages.python = {
     enable = true;
     uv.enable = true;
-    version = "3.13";
+    version = "3.12.15"; # 3.12.16 fails to build (nixpkgs mimetypes.patch no longer applies)
   };
 }
